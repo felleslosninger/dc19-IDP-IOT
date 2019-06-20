@@ -8,7 +8,7 @@ TO gain more insight into how to implement the endpoint, see [this project](http
 ### application.properties
 Azure will send incoming requests to your docker container on port 80, so you need to
 configure your application.properties file to make the application run on port 80
-![Image of application.properties](images/applicationproperties.png)
+![Image of application.properties](/images/applicationproperties.PNG?raw=true)
 ### maven
 In your pom.xml file add ``<docker.image.prefix>springio</docker.image.prefix>`` to the properties part 
 (springio can be replaced with whatever you want).
@@ -86,7 +86,7 @@ Check dockerhub to ensure that your image got successfully uploaded
 Head to [portal.azure.com](https://portal.azure.com) and enter the appropriate group
 
 Press create a resource
-![Image of azure portal](images/azure_portal.png)
+![Image of azure portal](/images/azure_portal.PNG?raw=true)
 
 Press Web, Webapp for containers
 
@@ -95,7 +95,7 @@ Fill in the fields, use linux as os
 When done click create. Azure will now set everything up.
 
 In the overview for the resource you created, you can find the url of the resource. Take note of this url
-![Image of url](images/resourceurl.png)
+![Image of url](images/resourceurl.PNG?raw=true)
 
 ## Configuring the Alexa skill endpoint
 Navigate to the page where you configure the endpoint.
@@ -103,4 +103,4 @@ Navigate to the page where you configure the endpoint.
 Enter the url to the resource into the default region
 
 Select that your development endpoint is a sub-domain 
-![Image of endpoint](images/endpoint.png)
+![Image of endpoint](/images/endpoint.PNG?raw=true)
