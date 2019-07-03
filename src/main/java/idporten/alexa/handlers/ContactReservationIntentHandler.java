@@ -4,8 +4,8 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.amazon.speech.ui.Card;
-import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import idporten.alexa.utils.AlexaUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,7 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Base64;
-import java.util.Iterator;
 
 @Component
 public class ContactReservationIntentHandler{
@@ -34,8 +33,8 @@ public class ContactReservationIntentHandler{
         System.out.println("ContactReservationIntentHandler");
 
         String accessToken = session.getUser().getAccessToken();
-        System.out.println("Contact Reservation registry:");
-        System.out.println(accessToken);
+        //System.out.println("Contact Reservation registry:");
+        //System.out.println(accessToken);
 
         //https://oidc-ver1.difi.no/kontaktinfo-oauth2-server/rest/v1/person
 
@@ -54,48 +53,24 @@ public class ContactReservationIntentHandler{
 
             Response response = client.newCall(req).execute();
             String content = response.body().string();
-
-
-
-
-
-            //GetURLDecoder??
-            System.out.println("BASE64:\n\n");
+            System.out.println("Payload");
             System.out.println(content);
-            byte[] decodedBytes = Base64.getMimeDecoder().decode(content);  //Base64.getDecoder().decode(content.toString());
-            String decodedContent = new String(decodedBytes);
-            System.out.println("DECODED:\n\n");
-            System.out.println(decodedContent);
 
-            String jsonString = decodedContent.substring(decodedContent.indexOf('}')+1, decodedContent.lastIndexOf('}'));
 
-            JSONObject json = new JSONObject(jsonString);
-            Iterator<String> it = json.keys();
-            /*
-            System.out.println("Keys coming:");
-            while(it.hasNext()){
-                System.out.println("key");
-                String key = it.next();
-                System.out.println(key);
-            }*/
-            String reservasjon = json.getString("reservasjon");
-            System.out.println(reservasjon);
+            JSONObject json = new JSONObject(content);
+
             String returnText;
-            if(reservasjon.equals("NEI")){
+            if(json.getString("reservasjon").equals("NEI")){
                 returnText = "You are not reserved from digital contact";
             }else{
                 returnText = "You are reserved from digital contact";
             }
 
             return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", returnText, session, false);
-
-
         }catch(Exception e){
             e.printStackTrace();
-            return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", "Something went wrong with the response. Please check the stack trace or try again.", session, false);
+            return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", String.format("Something went wrong with the response. Please check the stack trace or try again. %s", e.toString()), session, false);
         }
-
-
-
     }
 }
+
