@@ -7,12 +7,22 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.Card;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import idporten.alexa.utils.AlexaUtils;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Iterator;
@@ -33,29 +43,26 @@ public class ContactReservationIntentHandler{
             return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", "No access token found. Cannot contact the API.", session, false);
         }
         try{
-            URL url = new URL("https://oidc-ver1.difi.no/kontaktinfo-oauth2-server/rest/v1/person");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("Authorization", "Bearer " + accessToken);
-            con.setRequestMethod("GET");
+            OkHttpClient client = new OkHttpClient();
 
-            int status = con.getResponseCode();
-            System.out.println("Status code: " + status);
+            String url = "https://oidc-ver1.difi.no/kontaktinfo-oauth2-server/rest/v1/person";
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
+            Request req = new Request.Builder()
+                    .url(url)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .build();
 
-            while((inputLine = in.readLine()) != null){
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
+            Response response = client.newCall(req).execute();
+            String content = response.body().string();
+
+
+
+
 
             //GetURLDecoder??
             System.out.println("BASE64:\n\n");
             System.out.println(content);
-            byte[] decodedBytes = Base64.getMimeDecoder().decode(content.toString());  //Base64.getDecoder().decode(content.toString());
+            byte[] decodedBytes = Base64.getMimeDecoder().decode(content);  //Base64.getDecoder().decode(content.toString());
             String decodedContent = new String(decodedBytes);
             System.out.println("DECODED:\n\n");
             System.out.println(decodedContent);
