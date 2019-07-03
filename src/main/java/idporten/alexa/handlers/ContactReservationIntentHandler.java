@@ -4,8 +4,8 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.amazon.speech.ui.Card;
-import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import idporten.alexa.utils.AlexaUtils;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
-import java.util.Iterator;
 
 @Component
 public class ContactReservationIntentHandler{
@@ -40,7 +39,7 @@ public class ContactReservationIntentHandler{
             con.setRequestMethod("GET");
 
             int status = con.getResponseCode();
-            System.out.println("Status code: " + status);
+            System.out.println("Status: " + status);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -52,43 +51,24 @@ public class ContactReservationIntentHandler{
             in.close();
             con.disconnect();
 
-            //GetURLDecoder??
-            System.out.println("BASE64:\n\n");
-            System.out.println(content);
-            byte[] decodedBytes = Base64.getMimeDecoder().decode(content.toString());  //Base64.getDecoder().decode(content.toString());
-            String decodedContent = new String(decodedBytes);
-            System.out.println("DECODED:\n\n");
-            System.out.println(decodedContent);
+            DecodedJWT jwt = JWT.decode(content.toString());
+            String payload = jwt.getPayload();
+            String decoded = new String(Base64.getMimeDecoder().decode(payload));
 
-            String jsonString = decodedContent.substring(decodedContent.indexOf('}')+1, decodedContent.lastIndexOf('}'));
+            JSONObject json = new JSONObject(decoded);
 
-            JSONObject json = new JSONObject(jsonString);
-            Iterator<String> it = json.keys();
-            /*
-            System.out.println("Keys coming:");
-            while(it.hasNext()){
-                System.out.println("key");
-                String key = it.next();
-                System.out.println(key);
-            }*/
-            String reservasjon = json.getString("reservasjon");
-            System.out.println(reservasjon);
             String returnText;
-            if(reservasjon.equals("NEI")){
+            if(json.getString("reservasjon").equals("NEI")){
                 returnText = "You are not reserved from digital contact";
             }else{
                 returnText = "You are reserved from digital contact";
             }
 
             return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", returnText, session, false);
-
-
         }catch(Exception e){
             e.printStackTrace();
             return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", "Something went wrong with the response. Please check the stack trace or try again.", session, false);
         }
-
-
-
     }
 }
+
