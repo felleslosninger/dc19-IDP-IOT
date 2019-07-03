@@ -20,6 +20,6 @@ public class LoginIntentHandler{
 
         PlainTextOutputSpeech speech = AlexaUtils.newSpeech(speechText, false);
 
-        return AlexaUtils.newSpeechletResponse(linkAccountCard, speech, session, false);
+        return AlexaUtils.newSpeechletResponse(linkAccountCard, speech, session, true);
     }
 }

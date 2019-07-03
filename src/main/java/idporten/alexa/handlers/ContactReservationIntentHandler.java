@@ -24,7 +24,7 @@ public class ContactReservationIntentHandler{
         //https://oidc-ver1.difi.no/kontaktinfo-oauth2-server/rest/v1/person
 
         if(accessToken == null){
-            return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", "No access token found. Cannot contact the API.", session, false);
+            return AlexaUtils.newBasicSpeechResponse("Contact Reservation registry", "No access token found. Cannot contact the API.", session, true);
         }
         try{
             OkHttpClient client = new OkHttpClient();
