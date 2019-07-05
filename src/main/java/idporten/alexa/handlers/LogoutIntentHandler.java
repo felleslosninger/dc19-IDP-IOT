@@ -6,6 +6,7 @@ import com.amazon.speech.speechlet.Permissions;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import idporten.alexa.utils.AlexaUtils;
+import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 import java.io.DataOutputStream;
@@ -33,7 +34,32 @@ public class LogoutIntentHandler{
                Content-Type: application/x-www-form-urlencoded
 
                token=$token$*/
-            URL url = new URL("https://oidc-ver1.difi.no/idporten-oidc-provider/revoke");
+
+            OkHttpClient client = new OkHttpClient();
+
+            String url = "https://oidc-ver1.difi.no/idporten-oidc-provider/revoke";
+
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("token", accessToken)
+                    .build();
+
+            Request req = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .addHeader("Authorization", "Basic b2lkY19kaWZpX2NhbXA6N2NiMzdiNjQtMGVlZC00MWY4LWFmMTAtMGE0ZGIzZjNhOGRh")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .build();
+
+            Response response = client.newCall(req).execute();
+            int status = response.code();
+
+
+
+
+
+            /*URL url = new URL("https://oidc-ver1.difi.no/idporten-oidc-provider/revoke");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setDoOutput(true);
             con.setRequestProperty("Authorization", "Basic b2lkY19kaWZpX2NhbXA6N2NiMzdiNjQtMGVlZC00MWY4LWFmMTAtMGE0ZGIzZjNhOGRh");
@@ -47,7 +73,7 @@ public class LogoutIntentHandler{
             DataOutputStream dos = new DataOutputStream(con.getOutputStream());
             dos.write(postBytes);
 
-            int status = con.getResponseCode();
+            int status = con.getResponseCode();*/
             System.out.println("Status: " + status);
 
             if(status > 299){
