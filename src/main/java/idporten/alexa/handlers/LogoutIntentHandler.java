@@ -2,17 +2,11 @@ package idporten.alexa.handlers;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
-import com.amazon.speech.speechlet.Permissions;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import idporten.alexa.utils.AlexaUtils;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
-
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 @Component
 public class LogoutIntentHandler{
@@ -28,21 +22,12 @@ public class LogoutIntentHandler{
             return AlexaUtils.newBasicSpeechResponse("Logout", "No access token found. You do not seem to be logged in", session, true);
         }
         try{
-            // Authorization: Basic b2lkY19kaWZpX2NhbXA6N2NiMzdiNjQtMGVlZC00MWY4LWFmMTAtMGE0ZGIzZjNhOGRh
-            /* POST
-               Cache-Control: no-cache
-               Content-Type: application/x-www-form-urlencoded
-
-               token=$token$*/
 
             OkHttpClient client = new OkHttpClient();
 
             String url = "https://oidc-ver1.difi.no/idporten-oidc-provider/revoke";
 
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("token", accessToken)
-                    .build();
+            RequestBody requestBody = new FormBody.Builder().add("token", accessToken).build();
 
             Request req = new Request.Builder()
                     .url(url)
@@ -54,26 +39,6 @@ public class LogoutIntentHandler{
 
             Response response = client.newCall(req).execute();
             int status = response.code();
-
-
-
-
-
-            /*URL url = new URL("https://oidc-ver1.difi.no/idporten-oidc-provider/revoke");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setRequestProperty("Authorization", "Basic b2lkY19kaWZpX2NhbXA6N2NiMzdiNjQtMGVlZC00MWY4LWFmMTAtMGE0ZGIzZjNhOGRh");
-            con.setRequestProperty("Cache-Control", "no-cache");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            con.setRequestMethod("POST");
-
-            String postData = "token=" + accessToken;
-            byte[] postBytes = postData.getBytes(StandardCharsets.UTF_8);
-
-            DataOutputStream dos = new DataOutputStream(con.getOutputStream());
-            dos.write(postBytes);
-
-            int status = con.getResponseCode();*/
             System.out.println("Status: " + status);
 
             if(status > 299){
