@@ -1,0 +1,73 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "id port",
+      "intents": [
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "SaySomethingIntent",
+          "slots": [],
+          "samples": [
+            "say something"
+          ]
+        },
+        {
+          "name": "AccessTokenIntent",
+          "slots": [],
+          "samples": [
+            "give me access to my token",
+            "find access token",
+            "get my access token"
+          ]
+        },
+        {
+          "name": "ContactReservationIntent",
+          "slots": [],
+          "samples": [
+            "do i get physical mail",
+            "check my contact status",
+            "check if im reserved"
+          ]
+        },
+        {
+          "name": "LogoutIntent",
+          "slots": [],
+          "samples": [
+            "see you later skater",
+            "log me out",
+            "log out"
+          ]
+        },
+        {
+          "name": "LoginIntent",
+          "slots": [],
+          "samples": [
+            "do what i say",
+            "give me access",
+            "log me in"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}
