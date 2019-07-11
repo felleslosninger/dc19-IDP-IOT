@@ -1,7 +1,5 @@
 package idporten.alexa.handlers;
 
-import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import idporten.alexa.utils.AlexaUtils;
@@ -9,19 +7,19 @@ import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LogoutIntentHandler{
+public class LogoutIntentHandler {
 
-    public SpeechletResponse handleIntent(Intent intent, IntentRequest request, Session session){
+    SpeechletResponse handleIntent(Session session) {
         System.out.println("LogoutIntentHandler");
 
         String accessToken = session.getUser().getAccessToken();
         System.out.println("USER:");
         System.out.println(accessToken);
 
-        if(accessToken == null){
+        if (accessToken == null) {
             return AlexaUtils.newBasicSpeechResponse("Logout", "No access token found. You do not seem to be logged in", session, true);
         }
-        try{
+        try {
 
             OkHttpClient client = new OkHttpClient();
 
@@ -41,12 +39,12 @@ public class LogoutIntentHandler{
             int status = response.code();
             System.out.println("Status: " + status);
 
-            if(status > 299){
+            if (status > 299) {
                 return AlexaUtils.newBasicSpeechResponse("Logout", "Something went wrong. Status code is bigger that 299.", session, true);
-            }else{
+            } else {
                 return AlexaUtils.newBasicSpeechResponse("Logout", "You are logged out! Have fun with the rest of your life.", session, true);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return AlexaUtils.newBasicSpeechResponse("Logout", "Something went wrong with the response. Please check the stack trace or try again.", session, true);
         }

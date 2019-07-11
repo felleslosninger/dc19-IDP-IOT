@@ -3,31 +3,23 @@ package idporten.alexa.handlers;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.*;
-import com.amazon.speech.ui.Card;
-import com.amazon.speech.ui.LinkAccountCard;
-import com.amazon.speech.ui.PlainTextOutputSpeech;
 import idporten.alexa.utils.AlexaUtils;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HandlerSpeechlet implements SpeechletV2{
+public class HandlerSpeechlet implements SpeechletV2 {
 
-    @Autowired
-    private BeanFactory beanFactory;
-
-    public HandlerSpeechlet(){
+    public HandlerSpeechlet() {
 
     }
 
     @Override
-    public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope){
+    public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope) {
 
     }
 
     @Override
-    public SpeechletResponse onLaunch(SpeechletRequestEnvelope<LaunchRequest> requestEnvelope){
+    public SpeechletResponse onLaunch(SpeechletRequestEnvelope<LaunchRequest> requestEnvelope) {
         System.out.println("Launched the Alexa Application!");
 
         Session session = requestEnvelope.getSession();
@@ -40,8 +32,8 @@ public class HandlerSpeechlet implements SpeechletV2{
     }
 
     @Override
-    public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> requestEnvelope){
-        try{
+    public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
+        try {
             System.out.println("In onIntent");
             IntentRequest request = requestEnvelope.getRequest();
             Session session = requestEnvelope.getSession();
@@ -49,30 +41,32 @@ public class HandlerSpeechlet implements SpeechletV2{
             Intent intent = request.getIntent();
             String intentName = intent.getName();
 
-            if(intentName.equals("SaySomethingIntent")){
-                System.out.println("Saying something");
-                SaySomethingIntentHandler ssih = new SaySomethingIntentHandler();
-                return ssih.handleIntent(intent, request, session);
-            }else if(intentName.equals("AccessTokenIntent")){
-                System.out.println("Access token");
-                AccessTokenIntentHandler atih = new AccessTokenIntentHandler();
-                return atih.handleIntent(intent, request, session);
-            }else if(intentName.equals("ContactReservationIntent")){
-                System.out.println("Contact Reservation");
-                ContactReservationIntentHandler crih = new ContactReservationIntentHandler();
-                return crih.handleIntent(intent, request, session);
-            }else if(intentName.equals("LoginIntent")){
-                System.out.println("Login");
-                LoginIntentHandler lih = new LoginIntentHandler();
-                return lih.handleIntent(intent, request, session);
-            }
-            else if(intentName.equals("LogoutIntent")){
-                System.out.println("Logout");
-                LogoutIntentHandler lih = new LogoutIntentHandler();
-                return lih.handleIntent(intent, request, session);
-            }
-            else{
-                System.out.println("Not gonna say something");
+            switch (intentName) {
+                case "SaySomethingIntent":
+                    System.out.println("Saying something");
+                    SaySomethingIntentHandler ssih = new SaySomethingIntentHandler();
+                    return ssih.handleIntent(session);
+                case "AccessTokenIntent":
+                    System.out.println("Access token");
+                    AccessTokenIntentHandler atih = new AccessTokenIntentHandler();
+                    return atih.handleIntent(session);
+                case "ContactReservationIntent":
+                    System.out.println("Contact Reservation");
+                    ContactReservationIntentHandler crih = new ContactReservationIntentHandler();
+                    return crih.handleIntent(session);
+                case "LoginIntent": {
+                    System.out.println("Login");
+                    LoginIntentHandler lih = new LoginIntentHandler();
+                    return lih.handleIntent(session);
+                }
+                case "LogoutIntent": {
+                    System.out.println("Logout");
+                    LogoutIntentHandler lih = new LogoutIntentHandler();
+                    return lih.handleIntent(session);
+                }
+                default:
+                    System.out.println("Not gonna say something");
+                    break;
             }
             /*
             String handlerBeanName = intentName + "Handler";
@@ -80,14 +74,14 @@ public class HandlerSpeechlet implements SpeechletV2{
 
             IntentHandler intentHandler = (IntentHandler) handlerBean;
             return intentHandler.handleIntent(intent, request, session);*/
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new SpeechletResponse();
     }
 
     @Override
-    public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> requestEnvelope){
+    public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> requestEnvelope) {
 
     }
 }
