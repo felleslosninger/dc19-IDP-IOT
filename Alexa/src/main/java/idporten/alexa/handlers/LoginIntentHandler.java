@@ -1,7 +1,5 @@
 package idporten.alexa.handlers;
 
-import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.LinkAccountCard;
@@ -10,9 +8,9 @@ import idporten.alexa.utils.AlexaUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LoginIntentHandler{
+public class LoginIntentHandler {
 
-    public SpeechletResponse handleIntent(Intent intent, IntentRequest request, Session session){
+    SpeechletResponse handleIntent(Session session) {
         System.out.println("LoginIntent");
 
         String speechText = AlexaUtils.LoginText;

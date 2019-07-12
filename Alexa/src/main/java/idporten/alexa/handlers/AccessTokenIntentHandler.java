@@ -1,7 +1,5 @@
 package idporten.alexa.handlers;
 
-import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.Card;
@@ -10,13 +8,13 @@ import idporten.alexa.utils.AlexaUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AccessTokenIntentHandler{
+public class AccessTokenIntentHandler {
 
-    public SpeechletResponse handleIntent(Intent intent, IntentRequest request, Session session){
+    SpeechletResponse handleIntent(Session session) {
         System.out.println("AccessTokenIntentHandler");
 
         String accessToken = session.getUser().getAccessToken();
-        if(accessToken == null){
+        if (accessToken == null) {
             Card card = AlexaUtils.newCard("Access token", "No access token found");
             PlainTextOutputSpeech speech = AlexaUtils.newSpeech("No access token was found", AlexaUtils.inConversationMode(session));
 
