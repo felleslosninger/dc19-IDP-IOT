@@ -44,7 +44,7 @@ public class MyActionsApp extends DialogflowApp {
         LOGGER.info("Welcome to Hello World");
         System.out.println("Helloworld intent triggered");
         ResponseBuilder responseBuilder = getResponseBuilder(request);
-        responseBuilder.add("Hello to Kirstens worldddddddd suckas");
+        responseBuilder.add("Hello to Kirstens world");
         LOGGER.info("Helloworld intent end.");
         return responseBuilder.build();
     }
