@@ -4,9 +4,7 @@ import com.google.actions.api.*;
 import com.google.actions.api.response.ResponseBuilder;
 import com.google.actions.api.response.helperintent.Permission;
 import com.google.actions.api.response.helperintent.SignIn;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,9 +116,11 @@ public class MyActionsApp extends DialogflowApp {
             } else {
                 returnText = "You are reserved from digital contact";
             }
+            LOGGER.info("Check reservation intent end");
             return responseBuilder
                     .add(returnText)
                     .build();
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -130,6 +130,49 @@ public class MyActionsApp extends DialogflowApp {
 
         }
 
+    }
 
+    @ForIntent("LogOutIntent")
+    public ActionResponse LogOutIntent(ActionRequest request){
+        System.out.println("LogOutIntent");
+
+        String accessToken = request.getUser().getAccessToken();
+        if(accessToken == null){
+            ResponseBuilder responseBuilder = getResponseBuilder(request).add("No access token found. Could not log you out.");
+            return responseBuilder.build();
+        }
+
+        try{
+            OkHttpClient client = new OkHttpClient();
+
+            String url = "https://oidc-ver1.difi.no/idporten-oidc-provider/revoke";
+
+            RequestBody requestBody = new FormBody.Builder().add("token", accessToken).build();
+
+            Request req = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .addHeader("Authorization", "Basic b2lkY19kaWZpX2NhbXA6N2NiMzdiNjQtMGVlZC00MWY4LWFmMTAtMGE0ZGIzZjNhOGRh")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .build();
+
+            Response response = client.newCall(req).execute();
+            int status = response.code();
+            System.out.println("Status: " + status);
+
+            if(status > 299){
+                return getResponseBuilder(request).add("Something went wrong. Status code is bigger that 299.").build();
+            }else{
+                return getResponseBuilder(request).add("You are logged out!").endConversation().build();
+
+
+            }
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return getResponseBuilder(request).add("Something went wrong with the response. Please check the stack trace or try again.").build();
+        }
     }
 }
